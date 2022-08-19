@@ -1,4 +1,6 @@
 // ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_literals_to_create_immutables
+import 'package:diceodds/styles.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -15,7 +17,7 @@ class DiceOdds extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const HomeScreen(title: 'Dice Odds'),
+      home: HomeScreen(title: 'Dice Odds'),
     );
   }
 }
@@ -29,6 +31,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<int> firstAndLastNumber = [2, 12];
   List<int> rolledNumbers = [];
 
   void _incrementCounter(int roll) {
@@ -62,30 +65,16 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ),
-          Expanded(
-            child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 3,
-              children: List.generate(12, (index) {
-                return InkWell(
-                  onTap: () {
-                    _incrementCounter(index + 1);
-                  },
-                  child: Center(
-                    child: Text(
-                      '${index + 1}',
-                    ),
-                  ),
-                );
-              }),
-            ),
-          ),
+          rowOfNumbers(firstAndLastNumber[0]),
+          rowOfNumbers(firstAndLastNumber[0] + 3),
+          rowOfNumbers(firstAndLastNumber[0] + 6),
+          rowOfNumbers(firstAndLastNumber[0] + 9),
           InkWell(
             onTap: _endGameTapped,
             child: Container(
+              decoration: MyStyles().basicBitchBox,
               height: 50,
               width: double.infinity,
-              color: Colors.purple,
               child: Center(
                 child: Text(
                   'End Game',
@@ -94,7 +83,44 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
+      )
+    );
+  }
+
+  // Widget rollInputView() {
+  //   return Container(
+  //     child: Column(
+  //       children: [
+          
+  //       ]
+  //     ),
+  //   );
+  // }
+
+  Widget rowOfNumbers(int firstNumber) {
+    return Expanded(
+      child: Row(
+        children: [
+          number(firstNumber),
+          number(firstNumber + 1),
+          number(firstNumber + 2),
+        ],
       ),
+    );
+  }
+
+  Widget number(int number) {
+    bool emptyNumber = number > firstAndLastNumber.last;
+
+    return Expanded(
+      child: InkWell(
+        onTap: emptyNumber ? (){} : () => _incrementCounter(number) ,
+        child: Center(
+          child: Text(
+            emptyNumber ? '' : '$number',
+          ),
+        ),
+      )
     );
   }
 }
